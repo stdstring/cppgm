@@ -1,0 +1,7 @@
+# google test framework
+gtest
+# pa1
+pa1/pptoken
+pa1/pptoken-unittest
+pa1/tests/*.my
+pa1/tests/*.my.exit_status
