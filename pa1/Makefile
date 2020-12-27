@@ -2,7 +2,7 @@ CFLAGS=-g -std=gnu++11 -Wall
 
 all: pptoken
 
-SOURCES=
+SOURCES=Utf8.cpp
 
 # build pptoken application
 pptoken:
@@ -14,7 +14,10 @@ TEST-LIBS-DIR=../gtest/lib
 
 TEST-LFLAGS=-Wl,-rpath,$(TEST-LIBS-DIR)
 
-TEST-SOURCES=
+TEST-SOURCES= Utf8DecodeUtf32Tests.cpp \
+              Utf8EncodeUtf32Tests.cpp \
+              Utf8OctetCountTests.cpp
+
 
 TEST-INCLUDE=-I../gtest/include
 
