@@ -8,9 +8,9 @@
 namespace
 {
 
-struct TestUtf32Processor : cppgm::IUtf32Processor
+struct TestUtf32Consumer : cppgm::IUtf32Processor
 {
-    TestUtf32Processor();
+    TestUtf32Consumer();
 
     virtual void process(int32_t ch) override;
     virtual void process_eof() override;
@@ -20,21 +20,21 @@ struct TestUtf32Processor : cppgm::IUtf32Processor
     bool eof;
 };
 
-TestUtf32Processor::TestUtf32Processor() : eof(false)
+TestUtf32Consumer::TestUtf32Consumer() : eof(false)
 {
 }
 
-void TestUtf32Processor::process(int32_t ch)
+void TestUtf32Consumer::process(int32_t ch)
 {
     utf32Chars.push_back(ch);
 }
 
-void TestUtf32Processor::process_eof()
+void TestUtf32Consumer::process_eof()
 {
     eof = true;
 }
 
-void TestUtf32Processor::reset()
+void TestUtf32Consumer::reset()
 {
     utf32Chars.clear();
     eof = false;
@@ -48,17 +48,17 @@ namespace cppgm
 class Utf8ProcessorTests : public ::testing::Test
 {
 public:
-    Utf8ProcessorTests() : utf8Processor(Utf8Processor(testProcessor))
+    Utf8ProcessorTests() : utf8Processor(Utf8Processor(consumer))
     {
     }
 
     void check_state(std::vector<int32_t> const &expectedChars, bool expectedEof)
     {
-        ASSERT_EQ(expectedChars, testProcessor.utf32Chars);
-        ASSERT_EQ(expectedEof, testProcessor.eof);
+        ASSERT_EQ(expectedChars, consumer.utf32Chars);
+        ASSERT_EQ(expectedEof, consumer.eof);
     }
 
-    TestUtf32Processor testProcessor;
+    TestUtf32Consumer consumer;
     Utf8Processor utf8Processor;
 };
 
@@ -67,13 +67,13 @@ TEST_F(Utf8ProcessorTests, process)
     // process code point, which consists of single utf8 code unit
     utf8Processor.process('A');
     check_state({'A'}, false);
-    testProcessor.reset();
+    consumer.reset();
     // process code point, which consists of 2 utf8 code units
     utf8Processor.process(0xC3);
     check_state({}, false);
     utf8Processor.process(0x80);
     check_state({0xC0}, false);
-    testProcessor.reset();
+    consumer.reset();
     // process code point, which consists of 3 utf8 code units
     utf8Processor.process(0xE0);
     check_state({}, false);
@@ -81,7 +81,7 @@ TEST_F(Utf8ProcessorTests, process)
     check_state({}, false);
     utf8Processor.process(0x9C);
     check_state({0xEDC}, false);
-    testProcessor.reset();
+    consumer.reset();
     // process code point, which consists of 4 utf8 code units
     utf8Processor.process(0xF0);
     check_state({}, false);
@@ -91,7 +91,7 @@ TEST_F(Utf8ProcessorTests, process)
     check_state({}, false);
     utf8Processor.process(0xB2);
     check_state({0x118F2}, false);
-    testProcessor.reset();
+    consumer.reset();
     // process code point, which consists of single utf8 code unit
     // after process code point, which consists of 2 utf8 code units
     utf8Processor.process('A');
@@ -107,13 +107,13 @@ TEST_F(Utf8ProcessorTests, process_eof)
     // process eof without utf8 data
     utf8Processor.process_eof();
     check_state({}, true);
-    testProcessor.reset();
+    consumer.reset();
     // process eof after complete utf8 code points
     utf8Processor.process('A');
     check_state({'A'}, false);
     utf8Processor.process_eof();
     check_state({'A'}, true);
-    testProcessor.reset();
+    consumer.reset();
     // process eof after incomplete utf8 code points
     utf8Processor.process(0xC3);
     check_state({}, false);
