@@ -4,7 +4,8 @@ all: pptoken
 
 SOURCES=Utf8.cpp \
         Utf8Processor.cpp \
-        Utf32Processors.cpp
+        Utf32Processors.cpp \
+        TokenParsers.cpp
 
 # build pptoken application
 pptoken:
@@ -20,7 +21,8 @@ TEST-SOURCES= Utf8DecodeUtf32Tests.cpp \
               Utf8EncodeUtf32Tests.cpp \
               Utf8OctetCountTests.cpp \
               Utf8ProcessorTests.cpp \
-              Utf32ProcessorsTests.cpp
+              Utf32ProcessorsTests.cpp \
+              TokenParsersTests.cpp
 
 
 TEST-INCLUDE=-I../gtest/include
