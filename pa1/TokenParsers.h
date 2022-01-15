@@ -9,6 +9,8 @@ namespace cppgm
 
 enum class TokenType { Unknown = 0,
                        Whitespace,
+                       SingleLineComment,
+                       MultiLineComment,
                        NewLine,
                        HeaderName,
                        Identifier,
@@ -17,8 +19,8 @@ enum class TokenType { Unknown = 0,
                        UserDefinedCharLiteral,
                        StrLiteral,
                        UserDefinedStrLiteral,
-                       PreprocessingOpPunc,
-                       NonWhitespaceChar };
+                       PreprocessingOpPunc };
+                       //NonWhitespaceChar };
 
 struct Token
 {
@@ -41,7 +43,43 @@ public:
     virtual Token get_token() const = 0;
 };
 
-enum class NewLineTokenParserState { Start = 0, Final };
+enum class SimpleTokenParserState { Start = 0, Final };
+
+class WhitespaceTokenParser : public ITokenParser
+{
+public:
+    WhitespaceTokenParser();
+    virtual void reset() override;
+    virtual bool can_process(int32_t ch) const override;
+    virtual void process(int32_t ch) override;
+    virtual bool is_final_state() const override;
+    virtual Token get_token() const override;
+
+private:
+    SimpleTokenParserState _state;
+};
+
+/*class SingleLineCommentTokenParser : public ITokenParser
+{
+public:
+    SingleLineCommentTokenParser();
+    virtual void reset() override;
+    virtual bool can_process(int32_t ch) const override;
+    virtual void process(int32_t ch) override;
+    virtual bool is_final_state() const override;
+    virtual Token get_token() const override;
+};
+
+class MultiLineCommentTokenParser : public ITokenParser
+{
+public:
+    MultiLineCommentTokenParser();
+    virtual void reset() override;
+    virtual bool can_process(int32_t ch) const override;
+    virtual void process(int32_t ch) override;
+    virtual bool is_final_state() const override;
+    virtual Token get_token() const override;
+};*/
 
 class NewLineTokenParser : public ITokenParser
 {
@@ -54,7 +92,7 @@ public:
     virtual Token get_token() const override;
 
 private:
-    NewLineTokenParserState _state;
+    SimpleTokenParserState _state;
 };
 
 }

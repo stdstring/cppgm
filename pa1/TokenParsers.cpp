@@ -79,30 +79,100 @@ cppgm::Token::Token(TokenType type, std::vector<int32_t> const &data) : Type(typ
 {
 }
 
-cppgm::NewLineTokenParser::NewLineTokenParser() : _state(NewLineTokenParserState::Start)
+cppgm::WhitespaceTokenParser::WhitespaceTokenParser() : _state(SimpleTokenParserState::Start)
+{
+}
+
+void cppgm::WhitespaceTokenParser::reset()
+{
+    _state = SimpleTokenParserState::Start;
+}
+
+bool cppgm::WhitespaceTokenParser::can_process(int32_t ch) const
+{
+    return std::isspace(ch) && ch != NewLineChar;
+}
+
+void cppgm::WhitespaceTokenParser::process(int32_t ch)
+{
+    if (!std::isspace(ch) || ch == NewLineChar)
+        throw std::logic_error("Bad symbol");
+    _state = SimpleTokenParserState::Final;
+}
+
+bool cppgm::WhitespaceTokenParser::is_final_state() const
+{
+    return _state == SimpleTokenParserState::Final;
+}
+
+cppgm::Token cppgm::WhitespaceTokenParser::get_token() const
+{
+    if (_state != SimpleTokenParserState::Final)
+        throw std::logic_error("Non final state");
+    return Token(TokenType::Whitespace);
+}
+
+/*cppgm::SingleLineCommentTokenParser::SingleLineCommentTokenParser()
+{}
+
+void cppgm::SingleLineCommentTokenParser::reset()
+{}
+
+bool cppgm::SingleLineCommentTokenParser::can_process(int32_t ch) const
+{}
+
+void cppgm::SingleLineCommentTokenParser::process(int32_t ch)
+{}
+
+bool cppgm::SingleLineCommentTokenParser::is_final_state() const
+{}
+
+cppgm::Token cppgm::SingleLineCommentTokenParser::get_token() const
+{}
+
+
+cppgm::MultiLineCommentTokenParser::MultiLineCommentTokenParser()
+{}
+
+void cppgm::MultiLineCommentTokenParser::reset()
+{}
+
+bool cppgm::MultiLineCommentTokenParser::can_process(int32_t ch) const
+{}
+
+void cppgm::MultiLineCommentTokenParser::process(int32_t ch)
+{}
+
+bool cppgm::MultiLineCommentTokenParser::is_final_state() const
+{}
+
+cppgm::Token cppgm::MultiLineCommentTokenParser::get_token() const
+{}*/
+
+cppgm::NewLineTokenParser::NewLineTokenParser() : _state(SimpleTokenParserState::Start)
 {
 }
 
 void cppgm::NewLineTokenParser::reset()
 {
-    _state = NewLineTokenParserState::Start;
+    _state = SimpleTokenParserState::Start;
 }
 
 bool cppgm::NewLineTokenParser::can_process(int32_t ch) const
 {
-    return _state == NewLineTokenParserState::Start && ch == NewLineChar;
+    return _state == SimpleTokenParserState::Start && ch == NewLineChar;
 }
 
 void cppgm::NewLineTokenParser::process(int32_t ch)
 {
     switch (_state)
     {
-    case NewLineTokenParserState::Start:
+    case SimpleTokenParserState::Start:
         if (ch != NewLineChar)
             throw std::logic_error("Bad state");
-        _state = NewLineTokenParserState::Final;
+        _state = SimpleTokenParserState::Final;
         break;
-    case NewLineTokenParserState::Final:
+    case SimpleTokenParserState::Final:
         throw std::logic_error("Bad state");
     default:
         break;
@@ -111,12 +181,12 @@ void cppgm::NewLineTokenParser::process(int32_t ch)
 
 bool cppgm::NewLineTokenParser::is_final_state() const
 {
-    return _state == NewLineTokenParserState::Final;
+    return _state == SimpleTokenParserState::Final;
 }
 
 cppgm::Token cppgm::NewLineTokenParser::get_token() const
 {
-    if (_state != NewLineTokenParserState::Final)
+    if (_state != SimpleTokenParserState::Final)
         throw std::logic_error("Non final state");
     return Token(TokenType::NewLine);
 }
