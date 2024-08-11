@@ -1,7 +1,9 @@
 # google test framework
 gtest
+gmock
+# common
+.idea
 # pa1
-pa1/.idea
 pa1/pptoken
 pa1/pptoken-unittest
 pa1/tests/*.my
