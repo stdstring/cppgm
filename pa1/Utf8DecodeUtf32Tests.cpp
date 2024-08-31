@@ -24,12 +24,12 @@ class Utf8DecodeUtf32Tests : public testing::TestWithParam<DecodeUtf32Data>
 TEST_P(Utf8DecodeUtf32Tests, DecodeUtf32)
 {
     DecodeUtf32Data data = GetParam();
-    EXPECT_EQ(data.Dest, cppgm::decode_utf32(data.Source));
+    EXPECT_EQ(data.Dest, cppgm::pa1::decode_utf32(data.Source));
 }
 
 TEST(Utf8BadDecodeUtf32Tests, BadDecodeUtf32)
 {
-    EXPECT_THROW(cppgm::decode_utf32(0X110000), std::logic_error);
+    EXPECT_THROW(cppgm::pa1::decode_utf32(0X110000), std::logic_error);
 }
 
 INSTANTIATE_TEST_SUITE_P(Utf8DecodeUtf32, Utf8DecodeUtf32Tests, testing::Values(DecodeUtf32Data {'?', {'?'}, "Processing_0x3F"},

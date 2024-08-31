@@ -35,13 +35,13 @@ class Utf8BadEncodeUtf32Tests : public testing::TestWithParam<BadEncodeUtf32Data
 TEST_P(Utf8EncodeUtf32Tests, EncodeUtf32)
 {
     EncodeUtf32Data data = GetParam();
-    EXPECT_EQ(data.Dest, cppgm::encode_utf32(data.Source));
+    EXPECT_EQ(data.Dest, cppgm::pa1::encode_utf32(data.Source));
 }
 
 TEST_P(Utf8BadEncodeUtf32Tests, BadEncodeUtf32)
 {
     BadEncodeUtf32Data data = GetParam();
-    EXPECT_THROW(cppgm::encode_utf32(data.Source), std::domain_error);
+    EXPECT_THROW(cppgm::pa1::encode_utf32(data.Source), std::domain_error);
 }
 
 INSTANTIATE_TEST_SUITE_P(Utf8EncodeUtf32, Utf8EncodeUtf32Tests, testing::Values(EncodeUtf32Data {{'?'}, '?', "Processing_0x3F"},

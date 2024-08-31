@@ -23,7 +23,7 @@ bool check_utf32(int32_t utf32, int leftBorder, int rightBorder)
 
 }
 
-size_t cppgm::octet_count(unsigned char first)
+size_t cppgm::pa1::octet_count(unsigned char first)
 {
     // Char number range: 0000 0000-0000 007F - UTF-8 octet sequence: 0xxxxxxx
     if (check_octet(first, 0x80, 0))
@@ -40,14 +40,14 @@ size_t cppgm::octet_count(unsigned char first)
     throw std::domain_error("Bad first character");
 }
 
-int32_t cppgm::encode_utf32(unsigned char ch)
+int32_t cppgm::pa1::encode_utf32(unsigned char ch)
 {
     if (!check_octet(ch, 0x80, 0))
         throw std::domain_error("Bad first character");
     return ch;
 }
 
-int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2)
+int32_t cppgm::pa1::encode_utf32(unsigned char ch1, unsigned char ch2)
 {
     if (!check_octet(ch1, 0xE0, 0xC0))
         throw std::domain_error("Bad first character");
@@ -56,7 +56,7 @@ int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2)
     return ((ch1 & 0x1F) << 6) + (ch2 & 0x3F);
 }
 
-int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char ch3)
+int32_t cppgm::pa1::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char ch3)
 {
     if (!check_octet(ch1, 0xF0, 0xE0))
         throw std::domain_error("Bad first character");
@@ -67,7 +67,7 @@ int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char 
     return ((ch1 & 0x0F) << 12) + ((ch2 & 0x3F) << 6) + (ch3 & 0x3F);
 }
 
-int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char ch3, unsigned char ch4)
+int32_t cppgm::pa1::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char ch3, unsigned char ch4)
 {
     if (!check_octet(ch1, 0xF8, 0xF0))
         throw std::domain_error("Bad first character");
@@ -80,25 +80,25 @@ int32_t cppgm::encode_utf32(unsigned char ch1, unsigned char ch2, unsigned char 
     return ((ch1 & 0x07) << 18) + ((ch2 & 0x3F) << 12) + ((ch3 & 0x3F) << 6) + (ch4 & 0x3F);
 }
 
-int32_t cppgm::encode_utf32(std::vector<unsigned char> const &codeUnits)
+int32_t cppgm::pa1::encode_utf32(std::vector<unsigned char> const &codeUnits)
 {
     // TODO (std_string) : use functional style
     switch (codeUnits.size())
     {
         case 1:
-            return cppgm::encode_utf32(codeUnits.at(0));
+            return encode_utf32(codeUnits.at(0));
         case 2:
-            return cppgm::encode_utf32(codeUnits.at(0), codeUnits.at(1));
+            return encode_utf32(codeUnits.at(0), codeUnits.at(1));
         case 3:
-            return cppgm::encode_utf32(codeUnits.at(0), codeUnits.at(1), codeUnits.at(2));
+            return encode_utf32(codeUnits.at(0), codeUnits.at(1), codeUnits.at(2));
         case 4:
-            return cppgm::encode_utf32(codeUnits.at(0), codeUnits.at(1), codeUnits.at(2), codeUnits.at(3));
+            return encode_utf32(codeUnits.at(0), codeUnits.at(1), codeUnits.at(2), codeUnits.at(3));
         default:
             throw std::domain_error("Bad code units count");
     }
 }
 
-std::vector<unsigned char> cppgm::decode_utf32(int32_t ch)
+std::vector<unsigned char> cppgm::pa1::decode_utf32(int32_t ch)
 {
     // Char number range: 0000 0000-0000 007F - UTF-8 octet sequence: 0xxxxxxx
     if (check_utf32(ch, 0x00000000, 0x0000007F))

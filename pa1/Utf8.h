@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace cppgm
+namespace cppgm::pa1
 {
 
 size_t octet_count(unsigned char first);

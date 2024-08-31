@@ -35,13 +35,13 @@ class Utf8BadOctetCountTests : public testing::TestWithParam<BadOctetCountData>
 TEST_P(Utf8OctetCountTests, OctetCount)
 {
     OctetCountData data = GetParam();
-    EXPECT_EQ(data.Count, cppgm::octet_count(data.FirstOctet));
+    EXPECT_EQ(data.Count, cppgm::pa1::octet_count(data.FirstOctet));
 }
 
 TEST_P(Utf8BadOctetCountTests, BadOctetCount)
 {
     BadOctetCountData data = GetParam();
-    EXPECT_THROW(cppgm::octet_count(data.FirstOctet), std::domain_error);
+    EXPECT_THROW(cppgm::pa1::octet_count(data.FirstOctet), std::domain_error);
 }
 
 INSTANTIATE_TEST_SUITE_P(Utf8OctetCount, Utf8OctetCountTests, testing::Values(OctetCountData {0x01, 1, "Processing_0x01"},
